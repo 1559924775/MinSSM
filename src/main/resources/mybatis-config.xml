@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<!-- 
+		1.mybatis可以使用properties来引入外部properties配置文件的内容
+		resource:引入类路径下的资源
+		url:引入网络或磁盘路径下的资源
+	 -->
+	 
+	<properties resource="dbinfo.properties"/>
+	<!-- 
+		2.settings包含很多的设置项
+		settings:用来设置每一个设置项
+			name:设置项名
+			value:设置项取值
+	 -->
+
+	<settings>
+		<!-- 使用驼峰命名法，下划线会转成驼峰法 -->
+  		<setting name="mapUnderscoreToCamelCase" value="true"/>
+  		<!-- 开启全局缓存 -->
+  		<setting name="cacheEnabled" value="true"/>
+  		<!-- 延迟加载 ，用到才加载-->
+  		<setting name="lazyLoadingEnabled" value="true"></setting>
+  		<setting name="aggressiveLazyLoading" value="false"></setting>
+        <!--<setting name="logImpl" value="LOG4J"/>-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+	</settings>
+	
+
+	 <!--<plugins>-->
+		<!--&lt;!&ndash;<plugin interceptor="com.uestc.test.MyFirstPlugin">&ndash;&gt;-->
+	 		<!--&lt;!&ndash;<property name="userName" value="root"/>&ndash;&gt;-->
+	 	<!--&lt;!&ndash;</plugin>&ndash;&gt;-->
+	 	 <!--&lt;!&ndash;<plugin interceptor="com.github.pagehelper.PageInterceptor">&ndash;&gt;-->
+        		<!--&lt;!&ndash;&lt;!&ndash; config params as the following &ndash;&gt;&ndash;&gt;-->
+        	<!--&lt;!&ndash;<property name="param1" value="value1"/>&ndash;&gt;-->
+		<!--&lt;!&ndash;</plugin>&ndash;&gt;-->
+	 	<!---->
+	<!--</plugins>-->
+	<!-- 用@Alias给类起别名 -->
+	
+    <!--
+		    可以配置多个运行环境，但是每个SqlSessionFactory 实例只能选择一个运行环境 用default来指定
+		  transactionManager：事务管理器 type{MANAGED/JNDI/JDBC}
+		   dataSource：数据源 type{POOLED/UNPOOLED/JNDI} 以及自定义：实现DataSourceFactory接口，type是其全类名。
+		   environments也可以为不同的数据库配置dataSource
+     -->
+     
+    <environments default="work">
+        <environment id="work">
+            <transactionManager type="JDBC"></transactionManager>
+            <!-- UNPOOLED POOLED JNDI -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${driverName}" />
+                <property name="url" value="${url}" />
+                <property name="username" value="${user}" />
+                <property name="password" value="${pwd}" />
+            </dataSource>
+        </environment>
+    </environments>
+    
+    <!-- 
+    	3.databaseIdProvider，支持多数据库产商
+    	 type="DB_VENDOR"，VendorDatabaseIdProvider
+    	 	作用就是得到数据库产商的标识符
+     -->
+    <databaseIdProvider type="DB_VENDOR">
+    	<!-- 要结合environments -->
+    	<!-- 为不同的数据库起别名 -->
+    	<property name="MySQL" value="mysql"></property>
+    	<property name="Oracle" value="oracle"></property>
+    </databaseIdProvider>
+    <mappers>
+    	<!-- 
+    	 1)xml配置文件
+    		resource:引入类路径下的资源
+			url:引入网络或磁盘路径下的资源
+		 2)接口类
+		  	class:接口类必须和xml映射文件同名且在同一个包下
+		  	                或者没有映射文件，利用注解@Select等写在接口上，但是修改要重新编译。违背了初衷。
+		  	 <mapper class="com.uestc.mapper.EmpMapper"/>		
+		 3)批量注册 要求接口类必须和xml映射文件同名且在同一个包下
+		   	<package name="com.uestc.mapper"/> 
+    	 -->
+    	
+        <!--  <mapper resource="com/uestc/mapper/EmpMapper.xml"/>-->
+		<!--<mapper resource="com/uestc/mapper/CustomerMapper.xml"/>-->
+        <package name="com.uestc.mapper"/>
+    </mappers>
+</configuration>
